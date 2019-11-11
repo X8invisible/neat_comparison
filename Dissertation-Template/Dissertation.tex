@@ -16,6 +16,10 @@
 % \usepackage[parfill]{parskip} % Activate to begin paragraphs with an empty line rather than an indent
 
 %%% PACKAGES
+\usepackage{url}
+\def\UrlBreaks{\do\/\do-}
+\usepackage{breakurl}
+\usepackage[breaklinks]{hyperref}
 \usepackage[english]{babel}
 \usepackage{apacite}
 \usepackage{booktabs} % for much better looking tables
@@ -101,27 +105,28 @@ In order to achieve these aims, technologies, both old and new, will be analysed
 \end{enumerate}
 \subsection{Research Questions} TBD
 \subsection{Project Scope, Constraints}TBD
-\subsection{Literature Review Structure (guideline for myself)}
-\begin{itemize}
-	\item Definition (perceptron)
-	\item Different Types NN – Activation Functions
-	\item Uses: Classification / Control
-	\item Training Algorithms: EAs, Backpropagation, neat
-	\item Reinforcement Learning/Deep –
-	\item Evaluating (Error , Fitness)
-	\item Training / test sets
-	\item Overfitting
-	\item Environments / Benchmarks
+\newpage
 
-\end{itemize}
+
 \section{Literature Review}
-This review will discuss existing applications of Neural Networks, whose purposes vary, as they are used in numerous fields such as computing, engineering or even medical, as all of them taken in their most simplified form are just problem-solving. The review will analyse algorithms and environments where these can be used, in order to find the best methods to achieve the tasks set.
+This review will discuss existing applications of Artificial Neural Networks (as there are both Biological and Artificial, for simplicity, as the topic will mostly be about Artificial Neural Networks, they will be referred to as Neural Networks or NNs).\par
+Even though neural networks are not a new concept, they weren’t very popular in the 20th century, as there was not enough computing power to run them. As computers became better and better, also new methods for training neural networks were discovered. In 2006, the discovery of techniques for \textbf{deep} neural networks produced an important change that made deep neural networks and deep learning viable options that returned excellent results and performance in areas such as speech recognition, computer vision and natural language processing  \cite{nielsenneural}.
+Computing isn’t the only area where NNs, as they are used in numerous fields such as engineering \cite{aydinalp-koksal_comparison_2008}, or even medical \cite{baxt_use_1991}.
+The review will analyse algorithms and environments where these can be used, in order to find the best methods to achieve the tasks set.
+
 \subsection{Neural Networks Definition}To begin, we must understand and define what a neural network is.\par
+As defined by Gershenson, an artificial neuron is a model that is inspired by natural neurons [Figure \ref{fig:5}]. Natural neurons receive signals through synapses, when the signal received is strong enough (beyond a certain threshold), the neuron activates and emits a signal, which can in turn be sent to another synapse, and activate other neurons \cite{gershenson_artificial_2003}.\par
+\begin{figure}[h]
+	\includegraphics[width=0.4\textwidth]{neuron}
+	\centering
+	\caption{Biological Neuron \protect \cite{gershenson_artificial_2003}}
+	\label{fig:5}
+\end{figure}
 In a conventional approach to programming, the programmer tells the computer what it needs to do, in broken down simple tasks that can be easily performed by a computer, just like in mathematics or physics, which programming borrows a lot from. This conventional model can be considered an exact science, or a deterministic model, which means that no matter how many times you run such a program, the result will always be the same (6 multiplied by 7 will always be 42).\par
 But in a neural network, a programmer does not tell the computer how to solve a problem. In place of this, the program learns from observing the environment and how its actions affect it (good or bad), figuring out its own solution. This is called a stochastic approach, meaning the results of running such a program multiple times will not always be the same (you might take different busses when going to work).\par
-The first emergence of interest in neural networks (also known as ‘connectionist models’ or ‘parallel distributed processing’) \cite{krose_introduction_1993} came after the introduction of simplified neurons (called perceptrons) in 1943 \cite{mcculloch_logical_1943}. Their research was presented as a concept, components that were based off models of actual biological neurons. A perceptron works by taking in several binary inputs (shown as x1,x2 etc)  in order to produce a single binary output.[Figure \ref{fig:1}]\newpage
+The first emergence of interest in neural networks (also known as ‘connectionist models’ or ‘parallel distributed processing’) \cite{krose_introduction_1993} came after the introduction of simplified neurons (called perceptrons) in 1943 \cite{mcculloch_logical_1943}. Their research was presented as a concept, components that were based off models of actual biological neurons. A perceptron works by taking in several binary inputs (shown as x1,x2 etc)  in order to produce a single binary output.[Figure \ref{fig:1}]
 \begin{figure}[ht]
-	\includegraphics{perceptron}
+	\includegraphics[width=0.68\textwidth]{perceptron}
 	\centering
 	\caption{Perceptron Model \protect \cite{nielsenneural}}
 	\label{fig:1}
@@ -138,11 +143,22 @@ This model was improved and developed further in the 1960s by Frank Rosenblatt. 
 \end{equation}
 \\
 At a glance, one neuron on its own isn’t very impressive and it can only do so much through firing or not depending on the received input. One neuron by itself isn’t learning anything either, as the output will never vary if you give the same input over and over (threshold is still the same). There are two immediate ideas that surface into how to make a neuron useful and interesting: finding a way to make it learn, and grouping multiple neurons together that will form a (neural) network. \cite{marsland_machine_2015}
+
+\subsection{Classifying Neural Networks}
+Having a model of a NN is only half of what a NN is and does. The big selling point of a NN is it’s learning capabilities, also referred to as machine learning, and its similarities to how humans learn. The definition given by Mitchell \cite{mitchell_explanation-based_1993} is that given a task, training experience, and a performance measure, a computer is said to learn if its performance of the task improves with experience.\cite{thrun_learning_2012}\par
+These algorithms build a mathematical model based on sample data (also called training data) in order to generate decisions without any additional human programming. Based on the machine learning methods NNs can be split into the following categories:
+\begin{itemize}
+	\item Supervised Learning, where an algorithm builds its model by having both the inputs and the desired results (used in speech recognition, handwriting recognition, etc.)
+	\item Unsupervised Learning, where an algorithm builds its model by having only the inputs. Here, there is no correct answer from the start.
+	\item Reinforcement Learning, where an algorithm is built around maximising its reward, based on rules given.
+\end{itemize}
+
+
 \subsection{Layered Neural Networks}
 As previously noted, a single neuron can only do so much in order to make a decision, and a very simple one at that, but a complex network can make more complex decisions. Neural Networks are split between ‘layers’, the most simple one having 3 layers: an input layer, a hidden layer, and an output layer. All networks need to have 1 input layer and 1 output layer, but the hidden layer can be a group of layers, which is where all the computation is done.
 \subsubsection{Shallow Neural Networks}
 \begin{figure}[ht]
-	\includegraphics[width=\textwidth]{shallow}
+	\includegraphics[width=0.8\textwidth]{shallow}
 	\centering
 	\caption{Shallow Neural Network  \protect \cite{rob_j_hyndman_forecasting:_2018}}
 	\label{fig:2}
@@ -151,7 +167,6 @@ One might think of a neural network as a very complex system of layers, but in t
 As shown in the example NN, this neural network takes in 4 inputs and returns one output. The arrows that go from the input layer to the hidden layer shows that all the inputs are given to all the neurons of the network, and then all neurons return an output.
 \subsubsection{Multi-Layer Neural Networks}
 Multi-Layer NNs are more complex versions of the basic (shallow) model, by using more layers in the hidden layer. As all the computation is done by the hidden layer, multiple layers allow a neural network to do more abstract, complex computations.\par
-Even though neural networks are not a new concept, they weren’t very popular in the 20th century, as there was not enough computing power to run them. As computers became better and better, also new methods for training neural networks were discovered. In 2006, the discovery of techniques for \textbf{deep} neural networks produced an important change that made deep neural networks and deep learning viable options that returned excellent results and performance in areas such as speech recognition, computer vision and natural language processing.  \cite{nielsenneural}
 
 \subsection{Activation Functions}
 After talking about the structure of a NN, the next step is learning about the decision-making aspect. Previously, we mentioned that a neuron activates or not depending on the calculation of the sum of the input weights. Determining this is the purpose of the activation function.\par
@@ -167,23 +182,8 @@ A sigmoid function(e.g. f(x) =\( \frac{1}{1+e^x} \)) is a function who will prod
 	\caption{Sigmoid Function Graph \protect \cite{nikhil_ketkar_deep_2017}}
 	\label{fig:3}
 \end{figure}
-
-\subsection{Learning/Training Algorithms}
-Having a model of a NN is only half of what a NN is and does. The big selling point of a NN is it’s learning capabilities, also referred to as machine learning, and its similarities to how humans learn. The definition given by Mitchell \cite{mitchell_explanation-based_1993} is that given a task, training experience, and a performance measure, a computer is said to learn if its performance of the task improves with experience.\cite{thrun_learning_2012}\par
-These algorithms build a mathematical model based on sample data (also called training data) in order to generate decisions without any additional human programming. Machine learning can be split into three broad categories:
-\begin{itemize}
-	\item Supervised Learning, where an algorithm builds its model by having both the inputs and the desired results (used in speech recognition, handwriting recognition, etc.)
-	\item Unsupervised Learning, where an algorithm builds its model by having only the inputs. Here, there is no correct answer from the start.
-	\item Reinforcement Learning, where an algorithm is built around maximising its reward, based on rules given.
-\end{itemize}
-\subsubsection{Genetic Algorithms}
-Genetic Algorithms are based on the real-life process of natural evolution \cite{agoston_e._eiben_introduction_2015}. Eiben notes that this approach is not surprising at all, as the power of evolution is present everywhere in the world, through its diversity and adaptability to any environment and specific issues. This inspiration is closely tied to the fundamental principle of trial-and-error, as it takes many generations to adapt a species to its full potential.\par
-A genetic algorithm’s purpose is to optimise a set of parameters. This information is encoded in a bit string of fixed length, called the parameter string, or individual \cite{goldberg_genetic_1988}. Each individual is a different possible solution to the problem, the solution’s quality being measured through its fitness value (given by a fitness function specific to the problem). The evolution algorithm is a cycle of selection, crossover and mutation. By having an initial population, also called the first generation (usually randomly generated solutions), we want to select the best (fittest) individuals to be part of the parent pool for creating new offspring.\par
-The crossover is the phase where offspring are created, this can be done through various means (list), this is the most significant phase of the algorithm as it dictates the future of the solutions.\par
-Mutation is the step where some of an offspring’s genes are randomly modified, as to incentivise gene diversity. Mutation happens through a user defined mutation probability and can be done through a number of ways (inverting a bit in a binary gene, using uniform or non-uniform random values for integer or float genes, etc.).\par
-Both the mutation probability and mutation size are usually set low, as using too much randomness defeats the purpose of the algorithm, turning it into a simple random function.\par
-By doing this, evolutionary algorithms consider multiple points in the search space concurrently, reducing the risk of converging to local optima (Branke, 1995). Even though there is a significant degree of probability applied to every step, by favouring the fitter individuals, the most relevant areas of the search space are explored.\par
-\subsubsection{Backpropagation}
+\section {Supervised Learning}
+	\subsection{Backpropagation}
 Backpropagation (backward propagation of errors) is a widely used supervised learning algorithm, that through the use of an error function, the algorithm calculates the gradient of the function and determines if the NN has made a mistake when a prediction was made.\par
 This algorithm is based on an evolutionary approach, as an untrained NN doesn’t know anything about what it needs to do, but through exposure (inputs) and a lot of trial and error (the training), the NN learns from the data provided, this being reflected in the weights (the way the NN alters the data through its layers), the more the NN is trained, those weights get calibrated and can make more accurate predictions.\par
 Backpropagation works by propagating the input data \textbf{forward} through the NN layers, towards making a decision, and then \textbf{backpropagates} the error information of the prediction, in reverse through the layers, in order to adjust the weights.\cite{chris_nicholson_beginners_2019}  The steps the algorithm takes are:
@@ -192,8 +192,28 @@ Backpropagation works by propagating the input data \textbf{forward} through the
 	\item This is measured through a function
 	\item The error is backpropagated to adjust the weights
 \end{itemize}
+\section{Unsupervised Learning}
+	\subsection{Genetic Algorithms}
+Genetic Algorithms are based on the real-life process of natural evolution \cite{agoston_e._eiben_introduction_2015}. Eiben notes that this approach is not surprising at all, as the power of evolution is present everywhere in the world, through its diversity and adaptability to any environment and specific issues. This inspiration is closely tied to the fundamental principle of trial-and-error, as it takes many generations to adapt a species to its full potential.\par
+A genetic algorithm’s purpose is to optimise a set of parameters. This information is encoded in a bit string of fixed length, called the parameter string, or individual \cite{goldberg_genetic_1988}. Each individual is a different possible solution to the problem, the solution’s quality being measured through its fitness value (given by a fitness function specific to the problem). The evolution algorithm is a cycle of selection, crossover and mutation. By having an initial population, also called the first generation (usually randomly generated solutions), we want to select the best (fittest) individuals to be part of the parent pool for creating new offspring.\par
+The crossover is the phase where offspring are created, this can be done through various means (list), this is the most significant phase of the algorithm as it dictates the future of the solutions.\par
+Mutation is the step where some of an offspring’s genes are randomly modified, as to incentivise gene diversity. Mutation happens through a user defined mutation probability and can be done through a number of ways (inverting a bit in a binary gene, using uniform or non-uniform random values for integer or float genes, etc.).\par
+Both the mutation probability and mutation size are usually set low, as using too much randomness defeats the purpose of the algorithm, turning it into a simple random function.\par
+By doing this, evolutionary algorithms consider multiple points in the search space concurrently, reducing the risk of converging to local optima (Branke, 1995). Even though there is a significant degree of probability applied to every step, by favouring the fitter individuals, the most relevant areas of the search space are explored.\par
+
+\subsection{NEAT}
+Neuroevolution of Augmenting Topologies (NEAT) is a genetic algorithm used in the generation of evolving NN \cite{stanley_evolving_2002}. The main feature that NEAT brings is that it doesn’t evolve only the weights of the NN, but also modifying the nodes and their connections, thus changing the very structure of the NN. In a normal scenario, the structure of the NN is selected by the user based on previous knowledge, but a predefined structure that is made to accommodate many problems isn’t the most optimal structure for a specific problem. Through NEAT, this would not be the case, as the structure would evolve to fit in more precisely with the problem given.
+The three main components to how NEAT operates are:
+\begin{itemize}
+	\item Crossover using history markers. Stanley explains that by randomly crossing over the genomes of two NN will result in networks that are mutated wrong and non functional (see figure). In biology, this idea is taken care of through homology, which is the “alignment of chromosomes based on matching genes for a specific trait” \cite{heidenreich_neat:_2019}. By doing this, there is less chance of error than by using random crossover. By marking evolutions with a historical marker, each gene can be aligned with a similar one in order to have a higher chance of a working crossover.
+	\item Speciation, is a solution to the idea that most new evolutions are not good ones, because by adding new connections or nodes before optimising the weights will lead to lower performing individuals. By using speciation, the population is split into several ‘species’ based on their similarities (in topology or connections).
+	\item Minimal Structure. The main goal of Stanley \& Miikkulainen in their paper about NEAT was to create a framework that could evolve minimal networks. By starting with a minimal amount of nodes and connection, the evolving complexity of the network will only happen if it is found to be useful.
+\end{itemize}
+\subsection{CPPN}
+Compositional Pattern Producing Networks (CPPN), first introduced by K.O. Stanley \cite{stanley_compositional_2007}, the same author behind NEAT, CPPNs are an extension of NEAT. At the base level a CPPN works in the same way as NEAT, one of the major differences of CPPN is its activation function. While usually the same activation function is used in every node, CPPN can allow each node to have their unique activation function. By having different activation functions in a NN, this allows the NN to create an output that is “patterned, symmetrical and unique” \cite{wolfe_understanding_2018}. As such, because of the ability to create complex geometries, a CPPN is used in the generation of 2D and 3D shapes. The inputs to a CPPN, usually being x, y (and z for 3D) coordinates of a pixel, the CPPN then outputting a value ( binary for b\&w or rgb for colour) for the pixel’s colour.
 
 \newpage
+	\raggedright
 	\bibliographystyle{apacite}
 	\bibliography{hons}
 %example of References. See https://en.wikibooks.org/wiki/LaTeX/Bibliography_Management
