@@ -122,9 +122,7 @@ As defined by Gershenson, an artificial neuron is a model that is inspired by na
 	\caption{Biological Neuron \protect \cite{gershenson_artificial_2003}}
 	\label{fig:5}
 \end{figure}
-In a conventional approach to programming, the programmer tells the computer what it needs to do, in broken down simple tasks that can be easily performed by a computer, just like in mathematics or physics, which programming borrows a lot from. This conventional model can be considered an exact science, or a deterministic model, which means that no matter how many times you run such a program, the result will always be the same (6 multiplied by 7 will always be 42).\par
-But in a neural network, a programmer does not tell the computer how to solve a problem. In place of this, the program learns from observing the environment and how its actions affect it (good or bad), figuring out its own solution. This is called a stochastic approach, meaning the results of running such a program multiple times will not always be the same (you might take different busses when going to work).\par
-The first emergence of interest in neural networks (also known as ‘connectionist models’ or ‘parallel distributed processing’) \cite{krose_introduction_1993} came after the introduction of simplified neurons (called perceptrons) in 1943 \cite{mcculloch_logical_1943}. Their research was presented as a concept, components that were based off models of actual biological neurons. A perceptron works by taking in several binary inputs (shown as x1,x2 etc)  in order to produce a single binary output.[Figure \ref{fig:1}]
+The first emergence of interest in neural networks (also known as ‘connectionist models’ or ‘parallel distributed processing’) \cite{ben_krose_introduction_1993} came after the introduction of simplified neurons (called perceptrons) in 1943 \cite{mcculloch_logical_1943}. Their research was presented as a concept, components that were based off models of actual biological neurons. A perceptron works by taking in several binary inputs (shown as x1,x2 etc)  in order to produce a single binary output.[Figure \ref{fig:1}]
 \begin{figure}[ht]
 	\includegraphics[width=0.68\textwidth]{perceptron}
 	\centering
@@ -195,6 +193,8 @@ Backpropagation works by propagating the input data \textbf{forward} through the
 \section{Unsupervised Learning}
 	\subsection{Genetic Algorithms}
 Genetic Algorithms are based on the real-life process of natural evolution \cite{agoston_e._eiben_introduction_2015}. Eiben notes that this approach is not surprising at all, as the power of evolution is present everywhere in the world, through its diversity and adaptability to any environment and specific issues. This inspiration is closely tied to the fundamental principle of trial-and-error, as it takes many generations to adapt a species to its full potential.\par
+In a conventional approach to programming, the programmer tells the computer what it needs to do, in broken down simple tasks that can be easily performed by a computer, just like in mathematics or physics, which programming borrows a lot from. This conventional model can be considered an exact science, or a deterministic model, which means that no matter how many times you run such a program, the result will always be the same (6 multiplied by 7 will always be 42).\par
+But in a genetic algorithm, a programmer does not tell the computer how to solve a problem. In place of this, the program figures out its solution through adapting over multiple iterations to the environment’s needs. This is called a stochastic approach, meaning the results of running such a program multiple times will not always be the same (you might take different busses when going to work).\par
 A genetic algorithm’s purpose is to optimise a set of parameters. This information is encoded in a bit string of fixed length, called the parameter string, or individual \cite{goldberg_genetic_1988}. Each individual is a different possible solution to the problem, the solution’s quality being measured through its fitness value (given by a fitness function specific to the problem). The evolution algorithm is a cycle of selection, crossover and mutation. By having an initial population, also called the first generation (usually randomly generated solutions), we want to select the best (fittest) individuals to be part of the parent pool for creating new offspring.\par
 The crossover is the phase where offspring are created, this can be done through various means (list), this is the most significant phase of the algorithm as it dictates the future of the solutions.\par
 Mutation is the step where some of an offspring’s genes are randomly modified, as to incentivise gene diversity. Mutation happens through a user defined mutation probability and can be done through a number of ways (inverting a bit in a binary gene, using uniform or non-uniform random values for integer or float genes, etc.).\par
@@ -205,13 +205,34 @@ By doing this, evolutionary algorithms consider multiple points in the search sp
 Neuroevolution of Augmenting Topologies (NEAT) is a genetic algorithm used in the generation of evolving NN \cite{stanley_evolving_2002}. The main feature that NEAT brings is that it doesn’t evolve only the weights of the NN, but also modifying the nodes and their connections, thus changing the very structure of the NN. In a normal scenario, the structure of the NN is selected by the user based on previous knowledge, but a predefined structure that is made to accommodate many problems isn’t the most optimal structure for a specific problem. Through NEAT, this would not be the case, as the structure would evolve to fit in more precisely with the problem given.
 The three main components to how NEAT operates are:
 \begin{itemize}
-	\item Crossover using history markers. Stanley explains that by randomly crossing over the genomes of two NN will result in networks that are mutated wrong and non functional (see figure). In biology, this idea is taken care of through homology, which is the “alignment of chromosomes based on matching genes for a specific trait” \cite{heidenreich_neat:_2019}. By doing this, there is less chance of error than by using random crossover. By marking evolutions with a historical marker, each gene can be aligned with a similar one in order to have a higher chance of a working crossover.
+	\item Crossover using history markers. Stanley explains that by randomly crossing over the genomes of two NN will result in networks that are mutated wrong and non functional (see figure). In biology, this idea is taken care of through homology, which is the “alignment of chromosomes based on matching genes for a specific trait” \cite{heidenreich_neat:_2019}. By doing this, there is less chance of error than by using random crossover. By marking evolutions with a historical marker, each gene can be aligned with a similar one in order to have a higher chance of a working crossover  [Figure \ref{fig:6}].
 	\item Speciation, is a solution to the idea that most new evolutions are not good ones, because by adding new connections or nodes before optimising the weights will lead to lower performing individuals. By using speciation, the population is split into several ‘species’ based on their similarities (in topology or connections).
 	\item Minimal Structure. The main goal of Stanley \& Miikkulainen in their paper about NEAT was to create a framework that could evolve minimal networks. By starting with a minimal amount of nodes and connection, the evolving complexity of the network will only happen if it is found to be useful.
 \end{itemize}
 \subsection{CPPN}
-Compositional Pattern Producing Networks (CPPN), first introduced by K.O. Stanley \cite{stanley_compositional_2007}, the same author behind NEAT, CPPNs are an extension of NEAT. At the base level a CPPN works in the same way as NEAT, one of the major differences of CPPN is its activation function. While usually the same activation function is used in every node, CPPN can allow each node to have their unique activation function. By having different activation functions in a NN, this allows the NN to create an output that is “patterned, symmetrical and unique” \cite{wolfe_understanding_2018}. As such, because of the ability to create complex geometries, a CPPN is used in the generation of 2D and 3D shapes. The inputs to a CPPN, usually being x, y (and z for 3D) coordinates of a pixel, the CPPN then outputting a value ( binary for b\&w or rgb for colour) for the pixel’s colour.
-
+Compositional Pattern Producing Networks (CPPN), first introduced by K.O. Stanley \cite{stanley_compositional_2007}, the same author behind NEAT, CPPNs are an extension of NEAT. At the base level a CPPN works in the same way as NEAT, one of the major differences of CPPN is its activation function. While usually the same activation function is used in every node, CPPN can allow each node to have their unique activation function. By having different activation functions in a NN, this allows the NN to create an output that is “patterned, symmetrical and unique” \cite{wolfe_understanding_2018}. As such, because of the ability to create complex geometries, a CPPN is used in the generation of 2D and 3D shapes. The inputs to a CPPN, usually being x, y (and z for 3D) coordinates of a pixel, the CPPN then outputting a value (  rgb for colour or binary for b\&w ) for the pixel’s colour [Figure \ref{fig:7}].\par
+\begin{figure}[h]
+	\includegraphics[width=0.6\textwidth]{neat2}
+	\centering
+	\caption{NEAT crossover using markers \protect \cite{stanley_evolving_2002}}
+	\label{fig:6}
+\end{figure}
+\begin{figure}[h]
+	\includegraphics[width=0.35\textwidth]{1035}
+	\centering
+	\caption{CPPN generated b\&w  and colour image \protect \cite{noauthor_picbreeder_noyear}}
+	\label{fig:7}
+\end{figure}
+\subsection{Reinforcement Learning/ Deep-Q Learning}
+As defined by Sutton \& Barto, “reinforcement learning is learning what to do—how to map situations to actions—so as to maximize a numerical reward signal” \cite{richard_s._sutton_reinforcement_1998}. For this, the learner (the agent program) isn’t taught which actions to choose, but rather find out which actions maximises its reward through trial and error. In some cases, by choosing actions, these choices may affect future rewards past the immediate reward. 
+These basic rules of reinforcement learning, are the basis for (non deep) Q-Learning.\par
+In Q-Learning, through the uses of functions, an agent can map every action and its reward, and choose accordingly. But in a real-life scenario, mapping every action isn’t a feasible solution, as there can be millions of actions that would need to be mapped, and not enough time or memory to do so. By using a neural network (creating a Deep Q Network as a result) in order to approximate the result of a Q-Learning function.\par
+\begin{figure}[h]
+	\includegraphics[width=0.8\textwidth]{deepQ}
+	\centering
+	\caption{Q-Learning and Deep Q-Learning \protect \cite{noauthor_picbreeder_noyear}}
+	\label{fig:8}
+\end{figure}
 \newpage
 	\raggedright
 	\bibliographystyle{apacite}
