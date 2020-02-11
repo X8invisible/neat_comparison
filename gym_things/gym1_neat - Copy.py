@@ -1,7 +1,7 @@
 import gym
 import os
 import neat
-env = gym.make('CartPole-v1')
+env = gym.make('MountainCar-v0')
 env.reset()
 steps = 1000
 
@@ -10,28 +10,23 @@ steps = 1000
 def eval_genomes(genomes, config):
 
     for _, genome in genomes:
-        observation = [0, 0, 0, 0]  #Inital observation
+        observation = env.reset()  #Inital observation
         done = False
         net = neat.nn.FeedForwardNetwork.create(genome, config) #Creat net for genome with configs
         genome.fitness = 0  #Starting fitness of 0
         while not done:
+            action = net.activate(observation)
+            action = int(max(action))
+            observation, reward, done, info = env.step(action)
+            genome.fitness += reward
+            if done:
+                break
             #env.render()   #Render game   
-            output = net.activate(observation)  #Getting output from net based on observations
-            action = max(output)
-            if output[0] == action:
-                action = 1
-            else:
-                action = 0
-
-            observation, reward, done, info = env.step(action)  #Performs action
-            if observation[3] > 0.5 or observation[3] < -0.5:   
-                done = True
-                reward = -5
-                env.reset()
-            genome.fitness += reward    #Rewards genome for each turn
         env.reset()
 
 def run(config_file):
+    print(env.action_space)
+    print(env.observation_space)
     config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction,
                          neat.DefaultSpeciesSet, neat.DefaultStagnation,
                          config_file)
@@ -57,12 +52,12 @@ def run(config_file):
 
 def test_model(winner):
     
-    observation = [0, 0, 0, 0]
+    observation = [0, 0]
     score = 0
     reward = 0
     for i in range(100):
         done = False
-        observation = [0, 0, 0, 0]
+        observation = [0, 0]
         while not done:
             env.render()   #Render game      
             output = winner.activate(observation)
@@ -73,7 +68,7 @@ def test_model(winner):
                 action = 0
 
             observation, reward, done, info = env.step(action)
-            if observation[3] > 0.5 or observation[3] < -0.5:
+            if observation[0] >= -1.0 or observation[0] <= 1.0:
                 done = True
                 env.reset()
             score += reward
@@ -89,5 +84,5 @@ if __name__ == '__main__':
     # here so that the script will run successfully regardless of the
     # current working directory.
     local_dir = os.path.dirname(__file__)
-    config_path = os.path.join(local_dir, 'config-gym3')
+    config_path = os.path.join(local_dir, 'config-gym1 copy')
     run(config_path)
