@@ -1,15 +1,21 @@
 import gym
 import os
 import neat
+
+
 env = gym.make('MountainCar-v0')
 env.reset()
-steps = 1000
+steps = 200
+score_requirement = -198
+intial_games = 10000
 
 
 
 def eval_genomes(genomes, config):
 
+    max_position = -.4
     for _, genome in genomes:
+        runningReward = 0
         observation = env.reset()  #Inital observation
         done = False
         net = neat.nn.FeedForwardNetwork.create(genome, config) #Creat net for genome with configs
@@ -18,10 +24,15 @@ def eval_genomes(genomes, config):
             action = net.activate(observation)
             action = int(max(action))
             observation, reward, done, info = env.step(action)
-            genome.fitness += reward
-            if done:
+            # Give a reward for reaching a new maximum position
+            if observation[0] > -0.2:
+                genome.fitness += 1
+            else:
+                genome.fitness -= 1
+            if done: 
+                if observation[0] >= 0.5:
+                    genome.fitness +=20
                 break
-            #env.render()   #Render game   
         env.reset()
 
 def run(config_file):
@@ -41,7 +52,7 @@ def run(config_file):
     #p.add_reporter(neat.Checkpointer(5))
 
     # Run for up to x generations.
-    winner = p.run(eval_genomes, 50)
+    winner = p.run(eval_genomes, 20)
 
     # show final stats
     print('\nBest genome:\n{!s}'.format(winner))
@@ -55,20 +66,16 @@ def test_model(winner):
     observation = [0, 0]
     score = 0
     reward = 0
-    for i in range(100):
+    for i in range(1000):
         done = False
         observation = [0, 0]
         while not done:
-            env.render()   #Render game      
+            #env.render()   #Render game      
             output = winner.activate(observation)
-            action = max(output)
-            if output[0] == action:
-                action = 1
-            else:
-                action = 0
-
+            action = int(max(output))
+            print(action)
             observation, reward, done, info = env.step(action)
-            if observation[0] >= -1.0 or observation[0] <= 1.0:
+            if done:
                 done = True
                 env.reset()
             score += reward
