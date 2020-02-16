@@ -76,7 +76,7 @@ def test_model(winner):
         done = False
         observation = [0, 0, 0, 0]
         while not done:
-            #env.render()   #Render game      
+            env.render()   #Render game      
             output = winner.activate(observation)
             action = max(output)
             if output[0] == action:

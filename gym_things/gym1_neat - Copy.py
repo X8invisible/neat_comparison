@@ -9,6 +9,13 @@ steps = 200
 score_requirement = -198
 intial_games = 10000
 
+def highestVal(vals):
+    index = 0
+    for x in range(1,len(vals)):
+        if vals[x] > vals[index]:
+            index = x
+    return index
+
 
 
 def eval_genomes(genomes, config):
@@ -22,7 +29,8 @@ def eval_genomes(genomes, config):
         genome.fitness = 0  #Starting fitness of 0
         while not done:
             action = net.activate(observation)
-            action = int(max(action))
+            #print(action)
+            action = highestVal(action)
             observation, reward, done, info = env.step(action)
             # Give a reward for reaching a new maximum position
             if observation[0] > -0.2:
@@ -52,7 +60,7 @@ def run(config_file):
     #p.add_reporter(neat.Checkpointer(5))
 
     # Run for up to x generations.
-    winner = p.run(eval_genomes, 20)
+    winner = p.run(eval_genomes, 30)
 
     # show final stats
     print('\nBest genome:\n{!s}'.format(winner))
@@ -66,21 +74,21 @@ def test_model(winner):
     observation = [0, 0]
     score = 0
     reward = 0
-    for i in range(1000):
+    for i in range(100):
         done = False
         observation = [0, 0]
+        t = 0
         while not done:
-            #env.render()   #Render game      
+            t=t+1
+            env.render()
             output = winner.activate(observation)
-            action = int(max(output))
-            print(action)
+            action = highestVal(output)
             observation, reward, done, info = env.step(action)
             if done:
-                done = True
-                env.reset()
-            score += reward
+                print("Finished after {} timesteps".format(t+1))
+                score += t
+                break
         env.reset()
-
     print("Score Over 100 tries:")
     print(score/100)
 
@@ -91,5 +99,5 @@ if __name__ == '__main__':
     # here so that the script will run successfully regardless of the
     # current working directory.
     local_dir = os.path.dirname(__file__)
-    config_path = os.path.join(local_dir, 'config-gym1 copy')
+    config_path = os.path.join(local_dir, 'config-gym2')
     run(config_path)
