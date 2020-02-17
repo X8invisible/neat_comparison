@@ -103,5 +103,5 @@ if __name__ == '__main__':
     # current working directory.
     local_dir = os.path.dirname(__file__)
     #config_path = os.path.join(local_dir, 'config-gym1')
-    config_path = os.path.join(local_dir, 'config-no-neat1')
+    config_path = os.path.join(local_dir, 'config-gymPole')
     run(config_path)

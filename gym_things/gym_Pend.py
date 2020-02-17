@@ -1,45 +1,45 @@
 import gym
 import os
 import neat
+import numpy as np
 
 
-env = gym.make('MountainCar-v0')
+env = gym.make('Pendulum-v0')
+print(env.action_space.high)
+print(env.action_space.low)
 env.reset()
-steps = 200
-score_requirement = -198
-intial_games = 10000
-
-def highestVal(vals):
-    index = 0
-    for x in range(1,len(vals)):
-        if vals[x] > vals[index]:
-            index = x
-    return index
+#ranges for pendulum, env needs different than what NN returns
+#nn range
+inputLow = 0.0
+inputHigh = 1.0
+#pendulum range
+outputLow = -2.0
+outputHigh = 2.0
 
 
+
+def scale_range(input):
+    oldVal = input[0]
+    oldRange = 1.0  
+    newRange = 4.0  
+    newValue = (((oldVal - inputLow) * newRange) / oldRange) + outputLow
+    input[0] = newValue
+    return input
 
 def eval_genomes(genomes, config):
 
-    max_position = -.4
     for _, genome in genomes:
         runningReward = 0
         observation = env.reset()  #Inital observation
         done = False
-        net = neat.nn.FeedForwardNetwork.create(genome, config) #Creat net for genome with configs
+        net = neat.nn.FeedForwardNetwork.create(genome, config) #Create net for genome with configs
         genome.fitness = 0  #Starting fitness of 0
         while not done:
             action = net.activate(observation)
-            #print(action)
-            action = highestVal(action)
+            action = scale_range(action)
             observation, reward, done, info = env.step(action)
-            # Give a reward for reaching a new maximum position
-            if observation[0] > -0.2:
-                genome.fitness += 1
-            else:
-                genome.fitness -= 1
-            if done: 
-                if observation[0] >= 0.5:
-                    genome.fitness +=20
+            genome.fitness += reward
+            if done:
                 break
         env.reset()
 
@@ -60,7 +60,7 @@ def run(config_file):
     #p.add_reporter(neat.Checkpointer(5))
 
     # Run for up to x generations.
-    winner = p.run(eval_genomes, 30)
+    winner = p.run(eval_genomes, 100)
 
     # show final stats
     print('\nBest genome:\n{!s}'.format(winner))
@@ -70,23 +70,22 @@ def run(config_file):
     test_model(winner_net)  #Tests model 100 times and prints result
 
 def test_model(winner):
-    
-    observation = [0, 0]
+    input()
+    observation = env.reset()
     score = 0
     reward = 0
     for i in range(100):
         done = False
-        observation = [0, 0]
+        observation = env.reset()
         t = 0
         while not done:
             t=t+1
             env.render()
-            output = winner.activate(observation)
-            action = highestVal(output)
+            action = winner.activate(observation)
+            action = scale_range(action)
             observation, reward, done, info = env.step(action)
+            score += reward
             if done:
-                print("Finished after {} timesteps".format(t+1))
-                score += t
                 break
         env.reset()
     print("Score Over 100 tries:")
@@ -99,5 +98,5 @@ if __name__ == '__main__':
     # here so that the script will run successfully regardless of the
     # current working directory.
     local_dir = os.path.dirname(__file__)
-    config_path = os.path.join(local_dir, 'config-gym2')
+    config_path = os.path.join(local_dir, 'config-gymPend')
     run(config_path)
