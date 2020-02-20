@@ -44,8 +44,6 @@ def eval_genomes(genomes, config):
         env.reset()
 
 def run(config_file):
-    print(env.action_space)
-    print(env.observation_space)
     config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction,
                          neat.DefaultSpeciesSet, neat.DefaultStagnation,
                          config_file)
@@ -67,7 +65,8 @@ def run(config_file):
 
     #test winner
     winner_net = neat.nn.FeedForwardNetwork.create(winner, config)
-    test_model(winner_net)  #Tests model 100 times and prints result
+    score = test_model(winner_net)  #Tests model 100 times and prints result
+    return score
 
 def test_model(winner):
     
@@ -80,7 +79,7 @@ def test_model(winner):
         t = 0
         while not done:
             t=t+1
-            env.render()
+            #env.render()
             output = winner.activate(observation)
             action = highestVal(output)
             observation, reward, done, info = env.step(action)
@@ -91,13 +90,17 @@ def test_model(winner):
         env.reset()
     print("Score Over 100 tries:")
     print(score/100)
+    return (score/100)
 
-
-
-if __name__ == '__main__':
+def start():
     # Determine path to configuration file. This path manipulation is
     # here so that the script will run successfully regardless of the
     # current working directory.
     local_dir = os.path.dirname(__file__)
     config_path = os.path.join(local_dir, 'config-gymCartNo')
-    run(config_path)
+    score = run(config_path)
+
+    return score
+
+if __name__ == '__main__':
+    start()
