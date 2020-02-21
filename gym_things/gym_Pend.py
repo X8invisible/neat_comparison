@@ -60,11 +60,11 @@ def run(config_file):
     #p.add_reporter(neat.Checkpointer(5))
 
     # Run for up to x generations.
-    winner = p.run(eval_genomes, 100)
+    winner = p.run(eval_genomes, 500)
 
     # show final stats
     print('\nBest genome:\n{!s}'.format(winner))
-
+    input()
     #test winner
     winner_net = neat.nn.FeedForwardNetwork.create(winner, config)
     test_model(winner_net)  #Tests model 100 times and prints result

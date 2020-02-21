@@ -4,7 +4,7 @@ import neat
 env = gym.make('CartPole-v1')
 env.reset()
 steps = 1000
-
+generations = 20
 
 
 def eval_genomes(genomes, config):
@@ -45,7 +45,7 @@ def run(config_file):
     #p.add_reporter(neat.Checkpointer(5))
 
     # Run for up to x generations.
-    winner = p.run(eval_genomes, 50)
+    winner = p.run(eval_genomes, generations)
 
     # show final stats
     print('\nBest genome:\n{!s}'.format(winner))
@@ -82,13 +82,17 @@ def test_model(winner):
     print(score/100)
     return (score/100)
 
-def start():
+def start(gens, neat):
+    global generations 
+    generations = gens
      # Determine path to configuration file. This path manipulation is
     # here so that the script will run successfully regardless of the
     # current working directory.
     local_dir = os.path.dirname(__file__)
-    #config_path = os.path.join(local_dir, 'config-gym1')
-    config_path = os.path.join(local_dir, 'config-gymPoleNo')
+    if neat == "n":
+        config_path = os.path.join(local_dir, 'config-gymPoleNo')
+    else:
+        config_path = os.path.join(local_dir, 'config-gymPole')
     score = run(config_path)
     return score
 

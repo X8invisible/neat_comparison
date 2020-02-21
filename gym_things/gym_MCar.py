@@ -5,9 +5,8 @@ import neat
 
 env = gym.make('MountainCar-v0')
 env.reset()
-steps = 200
-score_requirement = -198
-intial_games = 10000
+generations = 20
+
 
 def highestVal(vals):
     index = 0
@@ -58,7 +57,7 @@ def run(config_file):
     #p.add_reporter(neat.Checkpointer(5))
 
     # Run for up to x generations.
-    winner = p.run(eval_genomes, 20)
+    winner = p.run(eval_genomes, generations)
 
     # show final stats
     print('\nBest genome:\n{!s}'.format(winner))
@@ -92,14 +91,18 @@ def test_model(winner):
     print(score/100)
     return (score/100)
 
-def start():
+def start(gens, neat):
+    generations = gens
     # Determine path to configuration file. This path manipulation is
     # here so that the script will run successfully regardless of the
     # current working directory.
     local_dir = os.path.dirname(__file__)
-    config_path = os.path.join(local_dir, 'config-gymCartNo')
-    score = run(config_path)
+    if neat == "n":
+        config_path = os.path.join(local_dir, 'config-gymCartNo')
+    else:
+        config_path = os.path.join(local_dir, 'config-gymCart')
 
+    score = run(config_path)
     return score
 
 if __name__ == '__main__':
