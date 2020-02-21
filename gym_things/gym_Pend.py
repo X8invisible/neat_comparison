@@ -34,11 +34,19 @@ def eval_genomes(genomes, config):
         done = False
         net = neat.nn.FeedForwardNetwork.create(genome, config) #Create net for genome with configs
         genome.fitness = 0  #Starting fitness of 0
+        t = 0
+        start = 0
         while not done:
+            t+=1
             action = net.activate(observation)
             action = scale_range(action)
             observation, reward, done, info = env.step(action)
-            genome.fitness += reward
+            #reward it for consecutive frames balanced
+            if(reward >-0.1):
+                genome.fitness += (t-start)
+            else:
+                start = t
+                genome.fitness += reward
             if done:
                 break
         env.reset()
@@ -64,7 +72,6 @@ def run(config_file):
 
     # show final stats
     print('\nBest genome:\n{!s}'.format(winner))
-    input()
     #test winner
     winner_net = neat.nn.FeedForwardNetwork.create(winner, config)
     test_model(winner_net)  #Tests model 100 times and prints result

@@ -1,7 +1,7 @@
 import gym
 import os
 import neat
-
+import visualize
 
 env = gym.make('MountainCar-v0')
 env.reset()
@@ -59,6 +59,9 @@ def run(config_file):
     # Run for up to x generations.
     winner = p.run(eval_genomes, generations)
 
+    visualize.draw_net(config, winner, True)
+    visualize.plot_stats(stats, ylog=False, view=True)
+    visualize.plot_species(stats, view=True)
     # show final stats
     print('\nBest genome:\n{!s}'.format(winner))
 
@@ -78,7 +81,7 @@ def test_model(winner):
         t = 0
         while not done:
             t=t+1
-            #env.render()
+            env.render()
             output = winner.activate(observation)
             action = highestVal(output)
             observation, reward, done, info = env.step(action)
@@ -92,6 +95,7 @@ def test_model(winner):
     return (score/100)
 
 def start(gens, neat):
+    global generations
     generations = gens
     # Determine path to configuration file. This path manipulation is
     # here so that the script will run successfully regardless of the
