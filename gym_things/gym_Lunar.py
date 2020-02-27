@@ -7,42 +7,41 @@ import numpy as np
 env = gym.make('LunarLander-v2')
 print(env.observation_space)
 print(env.action_space)
-print(env.action_space.high)
-print(env.action_space.low)
 env.reset()
-#ranges for pendulum, env needs different than what NN returns
-#nn range
-inputLow = 0.0
-inputHigh = 1.0
-#pendulum range
-outputLow = -2.0
-outputHigh = 2.0
 
+def highestVal(vals):
+    index = 0
+    for x in range(0,len(vals)):
+        if vals[x] > vals[index]:
+            index = x
+    return index
 
-
-def scale_range(input):
-    oldVal = input[0]
-    oldRange = 1.0  
-    newRange = 4.0  
-    newValue = (((oldVal - inputLow) * newRange) / oldRange) + outputLow
-    input[0] = newValue
-    return input
-
+def distanceToSolution(x,y):
+    #euclidean distance to (0,0) (where our landing pad is)
+    return np.sqrt( x**2 + y**2 )
 def eval_genomes(genomes, config):
 
+    distance = 10000
     for _, genome in genomes:
-        runningReward = 0
         observation = env.reset()  #Inital observation
         done = False
         net = neat.nn.FeedForwardNetwork.create(genome, config) #Create net for genome with configs
         genome.fitness = 0  #Starting fitness of 0
         while not done:
-            action = net.activate(observation)
-            action = scale_range(action)
-            observation, reward, done, info = env.step(action)
-            genome.fitness += reward
-            if done:
-                break
+            while not done:
+                action = net.activate(observation)
+                action = highestVal(action)
+                observation, reward, done, info = env.step(action)
+                currDistance = distanceToSolution(observation[0], observation[1])
+                if(currDistance > distance):
+                    genome.fitness +=1
+                    distance = currDistance
+                else:
+                    genome.fitness -=1
+                if done:
+                    #if solved, reward gives 200
+                    genome.fitness += reward
+                    break
         env.reset()
 
 def run(config_file):
@@ -62,7 +61,7 @@ def run(config_file):
     #p.add_reporter(neat.Checkpointer(5))
 
     # Run for up to x generations.
-    winner = p.run(eval_genomes, 100)
+    winner = p.run(eval_genomes, 30)
 
     # show final stats
     print('\nBest genome:\n{!s}'.format(winner))
@@ -84,7 +83,7 @@ def test_model(winner):
             t=t+1
             env.render()
             action = winner.activate(observation)
-            action = scale_range(action)
+            action = highestVal(action)
             observation, reward, done, info = env.step(action)
             score += reward
             if done:
@@ -100,5 +99,5 @@ if __name__ == '__main__':
     # here so that the script will run successfully regardless of the
     # current working directory.
     local_dir = os.path.dirname(__file__)
-    config_path = os.path.join(local_dir, 'config-gymPend')
+    config_path = os.path.join(local_dir, 'config-gymLunar')
     run(config_path)

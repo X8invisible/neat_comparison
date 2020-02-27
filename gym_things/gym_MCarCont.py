@@ -3,7 +3,7 @@ import os
 import neat
 import visualize
 
-env = gym.make('MountainCar-v0')
+env = gym.make('MountainCarContinuous-v0')
 env.reset()
 generations = 20
 
@@ -19,8 +19,8 @@ def highestVal(vals):
 
 def eval_genomes(genomes, config):
 
-    max_position = -.4
     for _, genome in genomes:
+        max_position = -.4
         observation = env.reset()  #Inital observation
         done = False
         net = neat.nn.FeedForwardNetwork.create(genome, config) #Creat net for genome with configs
@@ -28,11 +28,12 @@ def eval_genomes(genomes, config):
         while not done:
             action = net.activate(observation)
             #print(action)
-            action = highestVal(action)
+            #action = highestVal(action)
             observation, reward, done, info = env.step(action)
             # Give a reward for reaching a new maximum position
-            if observation[0] > -0.2:
+            if observation[0] > max_position:
                 genome.fitness += 1
+                max_position = observation[0]
             else:
                 genome.fitness -= 1
             if done: 
@@ -80,9 +81,9 @@ def test_model(winner):
         t = 0
         while not done:
             t=t+1
-            #env.render()
-            output = winner.activate(observation)
-            action = highestVal(output)
+            env.render()
+            action = winner.activate(observation)
+            #action = highestVal(output)
             observation, reward, done, info = env.step(action)
             if done:
                 #print("Finished after {} timesteps".format(t+1))
@@ -101,12 +102,12 @@ def start(gens, neat):
     # current working directory.
     local_dir = os.path.dirname(__file__)
     if neat == "n":
-        config_path = os.path.join(local_dir, 'config-gymCartNo')
+        config_path = os.path.join(local_dir, 'config-gymCartCont')
     else:
-        config_path = os.path.join(local_dir, 'config-gymCart')
+        config_path = os.path.join(local_dir, 'config-gymCartCont')
 
     score = run(config_path)
     return score
 
 if __name__ == '__main__':
-    start()
+    start(30,"y")

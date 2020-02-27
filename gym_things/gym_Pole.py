@@ -48,10 +48,10 @@ def run(config_file):
     # Run for up to x generations.
     winner = p.run(eval_genomes, generations)
 
-    node_names = {-1:'A', -2: 'B', 0:'A XOR B'}
-    visualize.draw_net(config, winner, True)
-    visualize.plot_stats(stats, ylog=False, view=True)
-    visualize.plot_species(stats, view=True)
+    #node_names = {-1:'A', -2: 'B', 0:'A XOR B'}
+    #visualize.draw_net(config, winner, True)
+    #visualize.plot_stats(stats, ylog=False, view=True)
+    #visualize.plot_species(stats, view=True)
     # show final stats
     print('\nBest genome:\n{!s}'.format(winner))
 
