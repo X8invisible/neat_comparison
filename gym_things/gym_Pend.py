@@ -43,7 +43,7 @@ def eval_genomes(genomes, config):
             observation, reward, done, info = env.step(action)
             #reward it for consecutive frames balanced
             if(reward >-0.1):
-                genome.fitness += (t-start)
+                genome.fitness += t-start
             else:
                 start = t
                 genome.fitness += reward
@@ -68,7 +68,7 @@ def run(config_file):
     #p.add_reporter(neat.Checkpointer(5))
 
     # Run for up to x generations.
-    winner = p.run(eval_genomes, 500)
+    winner = p.run(eval_genomes, 100)
 
     # show final stats
     print('\nBest genome:\n{!s}'.format(winner))
