@@ -27,7 +27,6 @@ def eval_genomes(genomes, config):
         genome.fitness = 0  #Starting fitness of 0
         while not done:
             action = net.activate(observation)
-            #print(action)
             #action = highestVal(action)
             observation, reward, done, info = env.step(action)
             # Give a reward for reaching a new maximum position
@@ -72,14 +71,14 @@ def run(config_file):
 
 def test_model(winner):
     
-    observation = [0, 0]
+    observation = env.reset()
     score = 0
     reward = 0
     for i in range(100):
         done = False
-        observation = [0, 0]
         t = 0
         while not done:
+            #counts the steps required to finish (200 max)
             t=t+1
             env.render()
             action = winner.activate(observation)
@@ -89,9 +88,9 @@ def test_model(winner):
                 #print("Finished after {} timesteps".format(t+1))
                 score += t
                 break
-        env.reset()
     print("Score Over 100 tries:")
     print(score/100)
+    #average score
     return (score/100)
 
 def start(gens, neat):

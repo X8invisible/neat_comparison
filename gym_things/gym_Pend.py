@@ -29,7 +29,6 @@ def scale_range(input):
 def eval_genomes(genomes, config):
 
     for _, genome in genomes:
-        runningReward = 0
         observation = env.reset()  #Inital observation
         done = False
         net = neat.nn.FeedForwardNetwork.create(genome, config) #Create net for genome with configs
@@ -43,7 +42,8 @@ def eval_genomes(genomes, config):
             observation, reward, done, info = env.step(action)
             #reward it for consecutive frames balanced
             if(reward >-0.1):
-                genome.fitness += t-start
+                #genome.fitness += -16 + (0.08*t-start)
+                genome.fitness += reward
             else:
                 start = t
                 genome.fitness += reward
@@ -68,7 +68,7 @@ def run(config_file):
     #p.add_reporter(neat.Checkpointer(5))
 
     # Run for up to x generations.
-    winner = p.run(eval_genomes, 100)
+    winner = p.run(eval_genomes, 50)
 
     # show final stats
     print('\nBest genome:\n{!s}'.format(winner))

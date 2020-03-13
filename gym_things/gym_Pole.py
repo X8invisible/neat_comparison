@@ -33,10 +33,8 @@ def eval_genomes(genomes, config):
         env.reset()
 
 def run(config_file):
-    print(env.action_space)
-    print(env.observation_space)
-    config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction, neat.DefaultSpeciesSet, neat.DefaultStagnation,config_file)
-    # Create the population, which is the top-level object for a NEAT run.
+    config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction, neat.DefaultSpeciesSet, neat.DefaultStagnation, config_file)
+    # Create the population
     p = neat.Population(config)
 
     # Add a stdout reporter to show progress in the terminal.
@@ -45,9 +43,11 @@ def run(config_file):
     p.add_reporter(stats)
     #p.add_reporter(neat.Checkpointer(5))
 
-    # Run for up to x generations.
+    # Run for up to x generations. The Generations parameter tells how many
+    # NEAT calls the eval_genomes fitness function in order to evaluate the population
     winner = p.run(eval_genomes, generations)
 
+    #Visualization of the winner NN
     #node_names = {-1:'A', -2: 'B', 0:'A XOR B'}
     #visualize.draw_net(config, winner, True)
     #visualize.plot_stats(stats, ylog=False, view=True)
@@ -62,14 +62,13 @@ def run(config_file):
 
 def test_model(winner):
     
-    observation = [0, 0, 0, 0]
     score = 0
     reward = 0
     for i in range(100):
         done = False
-        observation = [0, 0, 0, 0]
+        observation = env.reset()
         while not done:
-            #env.render()   #Render game      
+            #env.render()   #Render game window     
             output = winner.activate(observation)
             action = max(output)
             if output[0] == action:
@@ -81,7 +80,7 @@ def test_model(winner):
             score += reward
             if done:
                 break
-        env.reset()
+        
 
     print("Score Over 100 tries:")
     print(score/100)
@@ -102,4 +101,4 @@ def start(gens, neat):
     return score
 
 if __name__ == '__main__':
-   start()
+   start(20, 'y')
