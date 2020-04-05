@@ -6,7 +6,7 @@ import visualize
 env = gym.make('MountainCar-v0')
 env.reset()
 generations = 20
-
+showGraph = "n"
 
 def highestVal(vals):
     index = 0
@@ -31,8 +31,9 @@ def eval_genomes(genomes, config):
             action = highestVal(action)
             observation, reward, done, info = env.step(action)
             # Give a reward for reaching a new maximum position
-            if observation[0] > -0.2:
+            if observation[0] > max_position:
                 genome.fitness += 1
+                max_position = observation[0]
             else:
                 genome.fitness -= 1
             if done: 
@@ -58,9 +59,13 @@ def run(config_file):
     # Run for up to x generations.
     winner = p.run(eval_genomes, generations)
 
-    #visualize.draw_net(config, winner, True)
-    #visualize.plot_stats(stats, ylog=False, view=True)
-    #visualize.plot_species(stats, view=True)
+    if(showGraph == "n"):
+
+        #Visualization of the winner NN
+        node_names = {-1:'Pos', -2: 'Vel'}
+        visualize.draw_net(config, winner, True, node_names= node_names)
+        visualize.plot_stats(stats, ylog=False, view=True)
+        visualize.plot_species(stats, view=True)
     # show final stats
     print('\nBest genome:\n{!s}'.format(winner))
 
@@ -71,15 +76,13 @@ def run(config_file):
 
 def test_model(winner):
     
-    observation = [0, 0]
     score = 0
-    reward = 0
     for i in range(100):
         done = False
-        observation = [0, 0]
+        observation = env.reset()
         t = 0
         while not done:
-            t=t+1
+            t = t+1
             #env.render()
             output = winner.activate(observation)
             action = highestVal(output)
@@ -88,13 +91,17 @@ def test_model(winner):
                 #print("Finished after {} timesteps".format(t+1))
                 score += t
                 break
-        env.reset()
+        
     print("Score Over 100 tries:")
     print(score/100)
+
     return (score/100)
 
-def start(gens, neat):
+def start(gens, neat, graph):
     global generations
+    global showGraph
+
+    showGraph = graph
     generations = gens
     # Determine path to configuration file. This path manipulation is
     # here so that the script will run successfully regardless of the
@@ -109,4 +116,4 @@ def start(gens, neat):
     return score
 
 if __name__ == '__main__':
-    start()
+    start(30, 'y', "n")

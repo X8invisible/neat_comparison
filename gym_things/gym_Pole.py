@@ -6,7 +6,7 @@ env = gym.make('CartPole-v1')
 env.reset()
 steps = 1000
 generations = 20
-
+showGraph = "n"
 
 def eval_genomes(genomes, config):
 
@@ -47,11 +47,13 @@ def run(config_file):
     # NEAT calls the eval_genomes fitness function in order to evaluate the population
     winner = p.run(eval_genomes, generations)
 
-    #Visualization of the winner NN
-    #node_names = {-1:'A', -2: 'B', 0:'A XOR B'}
-    #visualize.draw_net(config, winner, True)
-    #visualize.plot_stats(stats, ylog=False, view=True)
-    #visualize.plot_species(stats, view=True)
+    if(showGraph == "n"):
+
+        #Visualization of the winner NN
+        node_names = {-1:'Pos', -2: 'Vel', -3:'Angle', -4:'VelTip'}
+        visualize.draw_net(config, winner, True, node_names = node_names)
+        visualize.plot_stats(stats, ylog=False, view=True)
+        visualize.plot_species(stats, view=True)
     # show final stats
     print('\nBest genome:\n{!s}'.format(winner))
 
@@ -86,8 +88,10 @@ def test_model(winner):
     print(score/100)
     return (score/100)
 
-def start(gens, neat):
+def start(gens, neat, graph):
     global generations 
+    global showGraph
+    showGraph = graph 
     generations = gens
      # Determine path to configuration file. This path manipulation is
     # here so that the script will run successfully regardless of the
@@ -101,4 +105,4 @@ def start(gens, neat):
     return score
 
 if __name__ == '__main__':
-   start(20, 'y')
+   start(20, 'y', "n")
